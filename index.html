@@ -17,14 +17,6 @@
 <body>
     <div id="cfto-locations">
         <div id="cfto-locations-map"></div>
-        <div id="cfto-locations-list-container">
-            <ul id="cfto-locations-list">
-                <li id="cfto-locations-list-item-template" role=button>
-                    <a href="javascript:void(0);" class="cfto-location-addr" role=button></a><br>
-                    <span class="cfto-location-desc"></span>
-                </li>
-            </ul>
-        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -58,63 +50,15 @@
             const customStyle = document.createElement('style');
             customStyle.textContent = `
                 #cfto-locations {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1em;
-
-                    ul#cfto-locations-list {
-                        margin: 0;
-                        padding: 0;
-
-                        li {
-                            margin: 1em 0;
-                            padding: 1em 1em 1em 45px;
-                            line-height: 1.3em;
-                            list-style-type: none;
-                            background: rgba(255, 255, 255, 0.25) url('https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png') no-repeat 10px center;
-
-                            &:first-child {
-                                margin-top: 0;
-                            }
-
-                            &:last-child {
-                                margin-bottom: 0;
-                            }
-
-                            .cfto-location-addr {
-                                padding: 0;
-                                cursor: pointer;
-                            }
-                        }
-                    }
-
                     #cfto-locations-map {
                         width: 100%;
                         height: 400px
                     }
                 }
 
-                @media (min-width: 600px) and (max-width: 900px) {
-                    #cfto-locations-list {
-                        column-count: 2;
-                        column-gap: 1em;
-                    }
-                }
-
                 @media (min-width: 901px) {
                     #cfto-locations {
-                        flex-direction: row;
-                        align-items: flex-start;
-
-                        #cfto-locations-list-container {
-                            flex: 0 0 20em;
-                            column-count: 1;
-                            order: 1;
-                        }
-
                         #cfto-locations-map {
-                            flex: 2 1 0;
-                            order: 2;
                             height: 625px;
                         }
                     }
@@ -183,30 +127,28 @@
                 }
             );
 
-            // Uncomment this to give access to the map object in the browser
-            // console for testing/debugging
-            // window.leafletMap = map;
 
-            // Use this tileLayer for local testing to save on MapTiler API request quota
-            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
+            if (window.location.host === "communityfridgesto.org") {
+                // Use this tileLayer for the real website
+                L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}{r}.png?key={apiKey}', {
+                    tileSize: 512,
+                    zoomOffset: -1,
+                    minZoom: 1,
+                    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+                    crossOrigin: true,
+                    apiKey: 'zzjoWUuSE4Rdsd0oeLgi',
+                }).addTo(map);
+            } else {
+                // Use this tileLayer for local testing to save on MapTiler API request quota
+                L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
 
-            // Use this tileLayer for the real website
-            // L.tileLayer('https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}{r}.png?key={apiKey}', {
-            //     tileSize: 512,
-            //     zoomOffset: -1,
-            //     minZoom: 1,
-            //     attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-            //     crossOrigin: true,
-            //     apiKey: 'zzjoWUuSE4Rdsd0oeLgi',
-            // }).addTo(map);
-
-            const locationsList = document.getElementById("cfto-locations-list");
-            const locationsListItemTemplate = document.getElementById(
-                "cfto-locations-list-item-template"
-            );
+                // Give access to the map object in the browser console for
+                // testing/debugging
+                window.leafletMap = map;
+            }
 
             for (let site of sites) {
                 const marker = L.marker(
@@ -217,27 +159,7 @@
 
                 const popupContent = site.desc ? `<strong>${site.addr}</strong><br>${site.desc}` : `<strong>${site.addr}</strong>`;
                 marker.bindPopup(popupContent);
-
-                const newLocationsListItem = locationsListItemTemplate.cloneNode(true);
-
-                const locationAddrButton = newLocationsListItem.getElementsByClassName("cfto-location-addr")[0];
-                locationAddrButton.innerText = site.addr;
-                locationAddrButton.addEventListener("click", function () {
-                    marker.openPopup();
-                    map.setView([site.lat, site.lng], 15);
-                });
-
-                const descElement = newLocationsListItem.getElementsByClassName("cfto-location-desc")[0];
-                if (site.desc) {
-                    descElement.innerText = site.desc;
-                } else {
-                    descElement.parentNode.removeChild(descElement);
-                }
-
-                locationsList.appendChild(newLocationsListItem);
             }
-
-            locationsList.removeChild(locationsListItemTemplate);
         });
     </script>
 </body>
