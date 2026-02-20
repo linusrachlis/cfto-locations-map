@@ -59,6 +59,14 @@
 
     <div id="cfto-locations">
         <div id="cfto-locations-map"></div>
+        <div id="cfto-locations-list-container">
+            <ul id="cfto-locations-list">
+                <li id="cfto-locations-list-item-template" role=button>
+                    <a href="javascript:void(0);" class="cfto-location-addr" role=button></a><br>
+                    <span class="cfto-location-desc"></span>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -94,15 +102,63 @@
             const customStyle = document.createElement('style');
             customStyle.textContent = `
                 #cfto-locations {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1em;
+
+                    ul#cfto-locations-list {
+                        margin: 0;
+                        padding: 0;
+
+                        li {
+                            margin: 1em 0;
+                            padding: 1em 1em 1em 45px;
+                            line-height: 1.3em;
+                            list-style-type: none;
+                            background: rgba(255, 255, 255, 0.25) url('https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png') no-repeat 10px center;
+
+                            &:first-child {
+                                margin-top: 0;
+                            }
+
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
+
+                            .cfto-location-addr {
+                                padding: 0;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+
                     #cfto-locations-map {
                         width: 100%;
                         height: 400px
                     }
                 }
 
+                @media (min-width: 600px) and (max-width: 900px) {
+                    #cfto-locations-list {
+                        column-count: 2;
+                        column-gap: 1em;
+                    }
+                }
+
                 @media (min-width: 901px) {
                     #cfto-locations {
+                        flex-direction: row;
+                        align-items: flex-start;
+
+                        #cfto-locations-list-container {
+                            flex: 0 0 20em;
+                            column-count: 1;
+                            order: 1;
+                        }
+
                         #cfto-locations-map {
+                            flex: 2 1 0;
+                            order: 2;
                             height: 625px;
                         }
                     }
@@ -231,6 +287,11 @@
             // Solution - see: https://leafletjs.com/reference.html#icon-default
             L.Icon.Default.prototype.options.imagePath = "https://unpkg.com/leaflet@1.9.4/dist/images/";
 
+            const locationsList = document.getElementById("cfto-locations-list");
+            const locationsListItemTemplate = document.getElementById(
+                "cfto-locations-list-item-template"
+            );
+
             for (let site of sites) {
                 const marker = L.marker(
                     [site.lat, site.lng],
@@ -240,7 +301,27 @@
 
                 const popupContent = site.desc ? `<strong>${site.addr}</strong><br>${site.desc}` : `<strong>${site.addr}</strong>`;
                 marker.bindPopup(popupContent);
+
+                const newLocationsListItem = locationsListItemTemplate.cloneNode(true);
+
+                const locationAddrButton = newLocationsListItem.getElementsByClassName("cfto-location-addr")[0];
+                locationAddrButton.innerText = site.addr;
+                locationAddrButton.addEventListener("click", function () {
+                    marker.openPopup();
+                    map.setView([site.lat, site.lng], 15);
+                });
+
+                const descElement = newLocationsListItem.getElementsByClassName("cfto-location-desc")[0];
+                if (site.desc) {
+                    descElement.innerText = site.desc;
+                } else {
+                    descElement.parentNode.removeChild(descElement);
+                }
+
+                locationsList.appendChild(newLocationsListItem);
             }
+
+            locationsList.removeChild(locationsListItemTemplate);
         });
     </script>
 
