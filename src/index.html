@@ -6,16 +6,55 @@
     <meta charset=utf8>
     <meta name=viewport content="width=device-width; initial-scale=1">
     <style>
+        @font-face {
+            font-family: omnes-pro;
+            src: url("https://use.typekit.net/af/09c03f/000000000000000077359bed/31/l?subset_id=2&fvd=n5&v=3") format("woff2"), url("https://use.typekit.net/af/09c03f/000000000000000077359bed/31/d?subset_id=2&fvd=n5&v=3") format("woff"), url("https://use.typekit.net/af/09c03f/000000000000000077359bed/31/a?subset_id=2&fvd=n5&v=3") format("opentype");
+            font-style: normal;
+            font-weight: 500;
+            font-stretch: normal;
+            font-display: auto;
+        }
+
+        @font-face {
+            font-family: omnes-pro;
+            src: url("https://use.typekit.net/af/829318/000000000000000077359c47/31/l?subset_id=2&fvd=n9&v=3") format("woff2"), url("https://use.typekit.net/af/829318/000000000000000077359c47/31/d?subset_id=2&fvd=n9&v=3") format("woff"), url("https://use.typekit.net/af/829318/000000000000000077359c47/31/a?subset_id=2&fvd=n9&v=3") format("opentype");
+            font-style: normal;
+            font-weight: 900;
+            font-stretch: normal;
+            font-display: auto;
+        }
+
         body {
+            font: 19px/30px omnes-pro, sans-serif;
             margin: 0;
             padding: 1em;
-            font-family: sans-serif;
             background-color: hsla(339.71830986, 78.02197802%, 64.31372549%, 1);
+        }
+
+        h2 {
+            font-family: omnes-pro, sans-serif;
+            color: black;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: calc(20px + 3vw);
+        }
+
+        a {
+
+            &:link,
+            &:hover,
+            &:active,
+            &:visited {
+                color: inherit;
+                text-decoration: underline;
+            }
         }
     </style>
 </head>
 
 <body>
+    <h2>Community Fridge Locations</h2>
+
     <div id="cfto-locations">
         <div id="cfto-locations-map"></div>
     </div>
