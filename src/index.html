@@ -68,9 +68,9 @@
         (function () {
             // We use this weird technique of dynamically injecting page CSS to
             // avoid needing editing access to the site header, and to keep all
-            // the related code together.
+            // the map-related code together.
 
-            // Leaflet CSS
+            // Base Leaflet CSS
             const leafletCss = document.createElement('link');
             leafletCss.rel = 'stylesheet';
             leafletCss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
@@ -78,7 +78,9 @@
             leafletCss.crossOrigin = '';
             document.head.appendChild(leafletCss);
 
-            // Leaflet Gesture Handling CSS
+            // Leaflet Gesture Handling CSS (this is part of the "Leaflet
+            // gesture handling" plugin that prevents the map from interfering
+            // with scrolling the page)
             const gestureCss = document.createElement('link');
             gestureCss.rel = 'stylesheet';
             gestureCss.href = 'https://unpkg.com/leaflet-gesture-handling@1.2.2/dist/leaflet-gesture-handling.min.css';
@@ -152,8 +154,12 @@
             const map = L.map(
                 "cfto-locations-map",
                 {
+                    // Starting position and zoom for the map
                     center: [43.6684, -79.3726],
                     zoom: 13,
+                    // Prevent the map from interfering with scrolling the page
+                    // (see:
+                    // https://github.com/elmarquis/Leaflet.GestureHandling/)
                     gestureHandling: true,
                     // Don't allow panning far away. This and the next
                     // option are to avoid using too much bandwidth from the
@@ -162,7 +168,7 @@
                         [43.7733, -79.6612],
                         [43.5826, -79.0954],
                     ],
-                    // Don't allow zooming out
+                    // Don't allow zooming out farther than this
                     minZoom: 12,
                 }
             );
