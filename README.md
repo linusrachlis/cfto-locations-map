@@ -13,9 +13,16 @@ inside is controlled by the HTML.
 ### General
 
 Make your updates in `src/index.html` and open the file in a browser to test
-them out. When ready, simply copy everything between (but not including)
-`<body>` and `</body>`, and paste it into the "Code" block in the Squarespace
-editor, then click Save at the top.
+them out. When ready, simply copy everything between these comment lines:
+```
+    <!-- BEGIN COPYING INTO SQUARESPACE EDITOR AFTER THIS LINE -->
+```
+and
+```
+    <!-- STOP COPYING HERE -->
+```
+... and paste it into the "Code" block in the Squarespace editor, then click
+Save at the top.
 
 ### Updating locations
 
