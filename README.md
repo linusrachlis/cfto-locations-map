@@ -84,4 +84,8 @@ MapTiler is allowed for real websites and has a free tier for non-commercial
 purposes, which is limited to 5,000 map views per month and 100,000 tiles
 served per month. A typical visitor would use one map view and 10-50 tiles
 served depending how much they zoom and pan around. We have a free MapTiler
-account; ask on Slack if you need the login.
+account; ask on Slack if you need the login. Alternatively, you can simply sign
+up for a new free account, generate a new API key, and replace the one in
+`src/index.html` (it's the `apiKey` parameter under the
+`L.tileLayer('https://api.maptiler.com/...)`
+section).
