@@ -196,6 +196,22 @@
                 window.leafletMap = map;
             }
 
+            // Fix unreliable image path detection leading to broken marker
+            // images. Leaflet uses very strange heuristics to auto-detect the
+            // image path if this is not set explicitly, and they only work if
+            // Leaflet CSS has finished loading by the time markers are being
+            // added. We're probably more prone to this problem due to the way the
+            // Leaflet CSS is injected into the header via this script, and
+            // therefore starts loading later than if it were included in page's
+            // original header.
+            //
+            // This hard-coded value was derived from comparing image URL when
+            // it's working vs. not working.
+            //
+            // Root issue - see: https://github.com/Leaflet/Leaflet/issues/7202
+            // Solution - see: https://leafletjs.com/reference.html#icon-default
+            L.Icon.Default.prototype.options.imagePath = "https://unpkg.com/leaflet@1.9.4/dist/images/";
+
             for (let site of sites) {
                 const marker = L.marker(
                     [site.lat, site.lng],
